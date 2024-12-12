@@ -9,14 +9,17 @@ func AddOperator(key string, cb func(values, data interface{}) (result interface
 }
 
 func operation(operator string, values, data interface{}) interface{} {
+	// AND evaluates values lazily, so parseValues() is delayed until needed
 	if operator == "and" {
-		return _and2(values, data)
+		return _and(values, data)
 	}
 
+	// OR evaluates values lazily, so parseValues() is delayed until needed
 	if operator == "or" {
-		return _or2(values, data)
+		return _or(values, data)
 	}
 
+	// Parse the entire remaining tree and eval recursively
 	values = parseValues(values, data)
 
 	// Check against any custom operators

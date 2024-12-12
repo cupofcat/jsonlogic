@@ -63,55 +63,7 @@ func unary(operator string, value interface{}) interface{} {
 	return b
 }
 
-func _and(values []interface{}) interface{} {
-	var v float64
-
-	isBoolExpression := true
-
-	for _, value := range values {
-		if isSlice(value) {
-			return value
-		}
-
-		if isBool(value) && !value.(bool) {
-			return false
-		}
-
-		if isString(value) && toString(value) == "" {
-			return value
-		}
-
-		if !isNumber(value) {
-			continue
-		}
-
-		isBoolExpression = false
-
-		_value := toNumber(value)
-
-		if _value > v {
-			v = _value
-		}
-	}
-
-	if isBoolExpression {
-		return true
-	}
-
-	return v
-}
-
-func _or(values []interface{}) interface{} {
-	for _, value := range values {
-		if isTrue(value) {
-			return value
-		}
-	}
-
-	return false
-}
-
-func _and2(values, data interface{}) interface{} {
+func _and(values, data interface{}) interface{} {
 	vals := parseValuesOnce(values, data).([]interface{})
 	var v float64
 
@@ -151,7 +103,7 @@ func _and2(values, data interface{}) interface{} {
 	return v
 }
 
-func _or2(values, data interface{}) interface{} {
+func _or(values, data interface{}) interface{} {
 	vals := parseValuesOnce(values, data).([]interface{})
 
 	for _, value := range vals {
@@ -480,6 +432,8 @@ func parseValues(values, data interface{}) interface{} {
 	return parsed
 }
 
+// Performs only a single iteration of parsing and evaluation rather than recursievely
+// Used in lazy evaluation of AND and OR operators
 func parseValuesOnce(values, data interface{}) interface{} {
 	if values == nil || isPrimitive(values) {
 		return values
