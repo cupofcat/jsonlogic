@@ -9,6 +9,16 @@ func AddOperator(key string, cb func(values, data interface{}) (result interface
 }
 
 func operation(operator string, values, data interface{}) interface{} {
+	// if operator == "and" {
+	// 	return _and2(values, data)
+	// }
+
+	if operator == "or" {
+		return _or2(values, data)
+	}
+
+	values = parseValues(values, data)
+
 	// Check against any custom operators
 	for index, customOperation := range customOperators {
 		if operator == index {
@@ -65,14 +75,6 @@ func operation(operator string, values, data interface{}) interface{} {
 	}
 
 	parsed := values.([]interface{})
-
-	if operator == "and" {
-		return _and(parsed)
-	}
-
-	if operator == "or" {
-		return _or(parsed)
-	}
 
 	if operator != "in" && len(parsed) == 1 {
 		return unary(operator, parsed[0])
